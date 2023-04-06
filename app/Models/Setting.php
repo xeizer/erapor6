@@ -10,6 +10,7 @@ class Setting extends Model
     use HasFactory;
     public $timestamps = false;
     protected $guarded = [];
+
     /*
     protected $table = 'settings';
     protected $primaryKey = 'key';

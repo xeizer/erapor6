@@ -50,6 +50,7 @@
                                     @else
                                     <button class="btn btn-sm btn-success" wire:click="getId({{$item->cp_id}}, 1)">Aktifkan</button>
                                     @endif
+                                    <button class="btn btn-warning" wire:click="editcapaiankompetensi({{$item->cp_id}})">Edit</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -73,11 +74,56 @@
             </div>
         </div>
     </div>
+    {{-- modal edit --}}
+    <div wire:ignore.self class="modal fade" id="editCP" tabindex="-1" aria-labelledby="pembelajaranModalLabel"
+        aria-hidden="true" data-bs-backdrop="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pembelajaranModalLabel">Pembelajaran Kelas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row mb-2">
+                        <label for="elemen" class="col-sm-3 col-form-label">Elemen</label>
+                        <div class="col-sm-9">
+                            <input type="text" wire:model="elemen" id="elemen" class="form-control" aria-describedby="elemen"/>
+                            @error('elemen')
+                            <span id="elemen" class="mt-1">
+                                <span class="text-danger">{{ $message }}</span>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label for="capaian_pembelajaran" class="col-sm-3 col-form-label">Capaian Pembelajaran</label>
+                        <div class="col-sm-9">
+                            <textarea rows="5" wire:model="capaian_pembelajaran" id="capaian_pembelajaran" class="form-control" aria-describedby="capaian_pembelajaran"></textarea>
+                            @error('capaian_pembelajaran')
+                            <span id="capaian_pembelajaran" class="mt-1">
+                                <span class="text-danger">{{ $message }}</span>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:target="simpan_cp" wire:loading.remove>Tutup</button>
+                    <div class="spinner-border text-primary" role="status" wire:loading wire:target="simpan_cp">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <button type="button" class="btn btn-primary" wire:click.prevent="simpan_cp" wire:target="simpan_cp" wire:loading.remove>Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('components.loader')
 </div>
 @push('scripts')
 <script>
     Livewire.on('editCP', event => {
+
         $('#editCP').modal('show');
     })
     Livewire.on('close-modal', event => {

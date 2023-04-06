@@ -7,12 +7,20 @@ use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Capaian_pembelajaran;
 use App\Models\Pembelajaran;
+//pakmaja
+use App\Models\Rombongan_belajar;
 
 class CapaianPembelajaran extends Component
 {
     use WithPagination, LivewireAlert;
     protected $paginationTheme = 'bootstrap';
     public $search = '';
+    public $semester_id;
+    public $dataedit;
+    public $elemen;
+    public $capaian_pembelajaran;
+    public $data_rombongan_belajar = [];
+    public $data_pembelajaran = [];
     public function updatingSearch()
     {
         $this->resetPage();
@@ -99,6 +107,81 @@ class CapaianPembelajaran extends Component
             ]);
         }
     }
+    public function editcapaiankompetensi($idnya)
+    {
+        $this->dataedit = Capaian_pembelajaran::where('cp_id', $idnya)->first();
+
+        $this->elemen = $this->dataedit->elemen;
+        $this->capaian_pembelajaran = $this->dataedit->deskripsi;
+
+        $this->emit('editCP');
+
+    }
+    //custom
+    public function changeTingkat(){
+        $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
+            $query->where('tingkat', $this->tingkat);
+            $query->where('semester_id', session('semester_aktif'));
+            $query->where('sekolah_id', session('sekolah_id'));
+            $query->whereHas('pembelajaran', $this->kondisi());
+        })->get();
+    }
+    private function kondisi(){
+        return function($query){
+            if($this->rombongan_belajar_id){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            }
+            $query->where('guru_id', $this->loggedUser()->guru_id);
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            $query->whereHas('rombongan_belajar', function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                });
+            });
+            $query->orWhere('guru_pengajar_id', $this->loggedUser()->guru_id);
+            if($this->rombongan_belajar_id){
+                $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+            }
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            $query->whereHas('rombongan_belajar', function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                });
+            });
+        };
+    }
+    public function changeRombel(){
+        $this->data_pembelajaran = Pembelajaran::where($this->kondisi())->orderBy('mata_pelajaran_id', 'asc')->get();
+    }
+    // public function store(){
+    //     $this->validate();
+    //     if($this->tingkat == 10){
+    //         $fase = 'E';
+    //     } else {
+    //         $fase = 'F';
+    //     }
+    //     $last_id_ref = Capaian_pembelajaran::where('is_dir', 1)->count();
+    //     $last_id_non_ref = Capaian_pembelajaran::where('is_dir', 0)->count();
+    //     $cp_id = $last_id_ref + 1000;
+    //     if($last_id_non_ref){
+    //         $cp_id = ($last_id_ref + $last_id_non_ref) + 1;
+    //     }
+    //     $this->simpan_cp($cp_id, $fase);
+    //     session()->flash('message', 'Data Capaian Pembelajaran Berhasil disimpan');
+    //     return redirect()->to('/referensi/capaian-pembelajaran');
+    // }
+    public function simpan_cp(){
+
+        $this->dataedit->elemen = $this->elemen;
+        $this->dataedit->deskripsi = $this->capaian_pembelajaran;
+        $this->dataedit->save();
+        $this->dataedit=null;
+        $this->emit('close-modal');
+
+    }
+    //akhir
     public function perbaharui(){
         $this->emit('close-modal');
     }

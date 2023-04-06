@@ -12,7 +12,8 @@ class Semester extends Model
 	protected $table = 'ref.semester';
 	protected $primaryKey = 'semester_id';
 	protected $guarded = [];
-	
+    public $keyType = 'string';
+
 	public function tahun_ajaran()
 	{
 		return $this->hasOne(Tahun_ajaran::class, 'tahun_ajaran_id', 'tahun_ajaran_id');
