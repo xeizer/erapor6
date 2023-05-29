@@ -30,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // $this->app->bind('path.public', function() {
+        //     return base_path().'/../rapor.smkn7ptk.sch.id';
+        //     });
         $path = base_path('bootstrap/cache');
         $files = File::files($path);
         $config = FALSE;

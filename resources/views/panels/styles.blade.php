@@ -41,5 +41,5 @@
   <link rel="stylesheet" href="{{ asset(mix('css/style.css')) }}" />
 @endif
   <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}" />
-@stack('styles') 
+@stack('styles')
 @livewireStyles
