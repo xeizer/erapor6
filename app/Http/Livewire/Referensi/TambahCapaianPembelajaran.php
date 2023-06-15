@@ -18,7 +18,7 @@ class TambahCapaianPembelajaran extends Component
     public $capaian_pembelajaran;
     public $data_rombongan_belajar = [];
     public $data_pembelajaran = [];
-    
+
     public function getListeners()
     {
         return [
@@ -54,12 +54,13 @@ class TambahCapaianPembelajaran extends Component
         ]);
     }
     public function changeTingkat(){
-        $this->data_rombongan_belajar = Rombongan_belajar::select('rombongan_belajar_id', 'nama')->where(function($query){
+        $this->data_rombongan_belajar = Rombongan_belajar::with('pembelajaran')->where(function($query){
             $query->where('tingkat', $this->tingkat);
             $query->where('semester_id', session('semester_aktif'));
             $query->where('sekolah_id', session('sekolah_id'));
-            $query->whereHas('pembelajaran', $this->kondisi());
+            // $query->whereHas('pembelajaran', $this->kondisi());
         })->get();
+        dd($this->data_rombongan_belajar);
     }
     private function kondisi(){
         return function($query){

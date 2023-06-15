@@ -210,11 +210,12 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 		</td>
 		<td style="width:60%;">
 			<p>Mengetahui,<br>Kepala Sekolah</p>
+            <br />
+            <br>
 			<br>
 			<br>
 			<br>
-			<br>
-			<br>
+
 			<p><u>{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}</u><br />
 				NIP. {{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
 			</p>

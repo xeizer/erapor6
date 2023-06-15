@@ -2,6 +2,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>NO</th>
                 <th class="text-center align-middle" width="40%">Nama Peserta Didik</th>
                 <th class="text-center align-middle" width="15%">NISN</th>
                 <th class="text-center align-middle" width="15%">Halaman Depan</th>
@@ -15,6 +16,7 @@
         <tbody>
             @foreach ($data_siswa as $siswa)
             <tr>
+                <td>{{$loop->iteration}}
                 <td>{{$siswa->nama}}</td>
                 <td class="text-center">{{$siswa->nisn}}</td>
                 <td class="text-center">

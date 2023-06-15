@@ -36,7 +36,7 @@
                             <option value="">== Pilih Rombongan Belajar ==</option>
                             @if($data_rombongan_belajar)
                             @foreach ($data_rombongan_belajar as $rombongan_belajar)
-                            <option value="{{$rombongan_belajar->rombongan_belajar_id}}">{{$rombongan_belajar->nama}}</option>
+                            <option value="{{$rombongan_belajar->rombongan_belajar_id}}">{{$rombongan_belajar}}</option>
                             @endforeach
                             @endif
                         </select>
@@ -104,21 +104,21 @@
         select2.on('select2:select', (event) => {
             //model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value);
             $(event.target.id).val(event.target.value).trigger('change');
-            if (event.target.hasAttribute('multiple')) { 
-                model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value); 
-            } else { 
-                model = event.params.data.id 
+            if (event.target.hasAttribute('multiple')) {
+                model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value);
+            } else {
+                model = event.params.data.id
             }
         });
         select2.on('select2:unselect', (event) => {
             //model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value);
-            if (event.target.hasAttribute('multiple')) { 
-                model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value); 
-            } else { 
-                model = event.params.data.id 
+            if (event.target.hasAttribute('multiple')) {
+                model = Array.from(event.target.options).filter(option => option.selected).map(option => option.value);
+            } else {
+                model = event.params.data.id
             }
         });
-        
+
         //$watch('model', (value) => {
             //select2.val(value).trigger('change');
             //Livewire.emit('select2', value)

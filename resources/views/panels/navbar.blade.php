@@ -95,7 +95,7 @@
         </span>
       </a>
       <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-        <h6 class="dropdown-header">Profil Pengguna</h6>
+        <h6 class="dropdown-header">Profil Pengguna {{Auth::user()->profile_photo_url}}</h6>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item"
           href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0)' }}">
