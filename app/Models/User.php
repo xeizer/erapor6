@@ -9,13 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use Laratrust\Traits\LaratrustUserTrait;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
 use App\Traits\Uuid;
 use Carbon\Carbon;
 
-class User extends Authenticatable
+class User extends Authenticatable implements LaratrustUser
 {
-    use LaratrustUserTrait;
+    use HasRolesAndPermissions;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -24,7 +25,7 @@ class User extends Authenticatable
     use Uuid;
     public $incrementing = false;
     public $keyType = 'string';
-	protected $primaryKey = 'user_id';
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that are mass assignable.
@@ -75,11 +76,11 @@ class User extends Authenticatable
         return ($date) ? Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d/m/Y H:i:s') : '';
     }
     public function getLoginTerakhirAttribute()
-	{
-        if($this->attributes['last_login_at']){
-            return Carbon::parse($this->attributes['last_login_at'])->translatedFormat('d F Y').' Pukul '.Carbon::parse($this->attributes['last_login_at'])->format('H:i:s');
+    {
+        if ($this->attributes['last_login_at']) {
+            return Carbon::parse($this->attributes['last_login_at'])->translatedFormat('d F Y') . ' Pukul ' . Carbon::parse($this->attributes['last_login_at'])->format('H:i:s');
         } else {
             return '-';
         }
-	}
+    }
 }
