@@ -46,21 +46,21 @@ class RegisterSuccessful
             'description' => $semester->nama,
         ]);
         if(!$user->hasRole($adminRole, $semester->semester_id)){
-            $user->attachRole($adminRole, $team);
+            $user->addRole($adminRole, $team);
         }
         */
         $user = $event->user;
-        $get_sekolah = Http::get('http://103.40.55.242/erapor_server/sync/get_sekolah/'.$user->name);
+        $get_sekolah = Http::get('http://103.40.55.242/erapor_server/sync/get_sekolah/' . $user->name);
         $data_sekolah = $get_sekolah->object();
-        if($data_sekolah){
+        if ($data_sekolah) {
             $data_sekolah = $data_sekolah->data;
             $data = NULL;
-            foreach($data_sekolah as $user_dapodik){
-                if($user_dapodik->username == $user->email){
+            foreach ($data_sekolah as $user_dapodik) {
+                if ($user_dapodik->username == $user->email) {
                     $data = $user_dapodik;
                 }
             }
-            if($data){
+            if ($data) {
                 if (!Hash::check($this->request->password, $data->password)) {
                     Auth::logout();
                     $user->delete();
@@ -69,31 +69,31 @@ class RegisterSuccessful
                 }
                 $semester = Semester::where('periode_aktif', 1)->first();
                 $data_sync = [
-                    'username_dapo'		=> $data->username,
-                    'password_dapo'		=> $data->password_lama,
-                    'npsn'				=> $data->npsn,
-                    'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
-                    'semester_id'		=> $semester->semester_id,
-                    'sekolah_id'		=> $data->sekolah_id,
+                    'username_dapo'        => $data->username,
+                    'password_dapo'        => $data->password_lama,
+                    'npsn'                => $data->npsn,
+                    'tahun_ajaran_id'    => $semester->tahun_ajaran_id,
+                    'semester_id'        => $semester->semester_id,
+                    'sekolah_id'        => $data->sekolah_id,
                 ];
                 $response = Http::withHeaders([
                     'x-api-key' => $data->sekolah_id,
                 ])->withBasicAuth('admin', '1234')->asForm()->post('http://103.40.55.242/erapor_server/api/register', $data_sync);
                 $sekolah = $response->object();
                 $set_data = $sekolah->data;
-                if($set_data->bentuk_pendidikan_id == '15'){
-                    $get_kode_wilayah = $set_data->wilayah;//Mst_wilayah::with(['parrentRecursive'])->find($set_data->kode_wilayah);
+                if ($set_data->bentuk_pendidikan_id == '15') {
+                    $get_kode_wilayah = $set_data->wilayah; //Mst_wilayah::with(['parrentRecursive'])->find($set_data->kode_wilayah);
                     $kode_wilayah = $set_data->kode_wilayah;
                     $kecamatan = '-';
                     $kabupaten = '-';
                     $provinsi = '-';
-                    if($get_kode_wilayah){
+                    if ($get_kode_wilayah) {
                         $kode_wilayah = $get_kode_wilayah->kode_wilayah;
-                        if($get_kode_wilayah->parrent_recursive){
+                        if ($get_kode_wilayah->parrent_recursive) {
                             $kecamatan = $get_kode_wilayah->parrent_recursive->nama;
-                            if($get_kode_wilayah->parrent_recursive->parrent_recursive){
+                            if ($get_kode_wilayah->parrent_recursive->parrent_recursive) {
                                 $kabupaten = $get_kode_wilayah->parrent_recursive->parrent_recursive->nama;
-                                if($get_kode_wilayah->parrent_recursive->parrent_recursive->parrent_recursive){
+                                if ($get_kode_wilayah->parrent_recursive->parrent_recursive->parrent_recursive) {
                                     $provinsi = $get_kode_wilayah->parrent_recursive->parrent_recursive->parrent_recursive->nama;
                                     Mst_wilayah::updateOrCreate(
                                         [
@@ -150,24 +150,24 @@ class RegisterSuccessful
                     $sekolah = Sekolah::updateOrCreate(
                         ['sekolah_id' => $set_data->sekolah_id],
                         [
-                            'npsn' 					=> $set_data->npsn,
-                            'nss' 					=> $set_data->nss,
-                            'nama' 					=> $set_data->nama,
-                            'alamat' 				=> $set_data->alamat_jalan,
-                            'desa_kelurahan'		=> $set_data->desa_kelurahan,
-                            'kode_wilayah'			=> $kode_wilayah,
-                            'kecamatan' 			=> $kecamatan,
-                            'kabupaten' 			=> $kabupaten,
-                            'provinsi' 				=> $provinsi,
-                            'kode_pos' 				=> $set_data->kode_pos,
-                            'lintang' 				=> $set_data->lintang,
-                            'bujur' 				=> $set_data->bujur,
-                            'no_telp' 				=> $set_data->nomor_telepon,
-                            'no_fax' 				=> $set_data->nomor_fax,
-                            'email' 				=> $set_data->email,
-                            'website' 				=> $set_data->website,
-                            'status_sekolah'		=> $set_data->status_sekolah,
-                            'last_sync'				=> now(),
+                            'npsn'                     => $set_data->npsn,
+                            'nss'                     => $set_data->nss,
+                            'nama'                     => $set_data->nama,
+                            'alamat'                 => $set_data->alamat_jalan,
+                            'desa_kelurahan'        => $set_data->desa_kelurahan,
+                            'kode_wilayah'            => $kode_wilayah,
+                            'kecamatan'             => $kecamatan,
+                            'kabupaten'             => $kabupaten,
+                            'provinsi'                 => $provinsi,
+                            'kode_pos'                 => $set_data->kode_pos,
+                            'lintang'                 => $set_data->lintang,
+                            'bujur'                 => $set_data->bujur,
+                            'no_telp'                 => $set_data->nomor_telepon,
+                            'no_fax'                 => $set_data->nomor_fax,
+                            'email'                 => $set_data->email,
+                            'website'                 => $set_data->website,
+                            'status_sekolah'        => $set_data->status_sekolah,
+                            'last_sync'                => now(),
                         ]
                     );
                     $user->sekolah_id = $sekolah->sekolah_id;
@@ -178,8 +178,8 @@ class RegisterSuccessful
                         'display_name' => $semester->nama,
                         'description' => $semester->nama,
                     ]);
-                    if(!$user->hasRole($adminRole, $semester->semester_id)){
-                        $user->attachRole($adminRole, $team);
+                    if (!$user->hasRole($adminRole, $semester->semester_id)) {
+                        $user->addRole($adminRole, $team);
                     }
                     $user->save();
                     $this->request->session()->put('semester_id', $semester->nama);

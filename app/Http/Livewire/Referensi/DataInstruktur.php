@@ -28,7 +28,8 @@ class DataInstruktur extends Component
     {
         $this->resetPage();
     }
-    public function loadPerPage(){
+    public function loadPerPage()
+    {
         $this->resetPage();
     }
     public $sortby = 'nama';
@@ -80,16 +81,16 @@ class DataInstruktur extends Component
     public function render()
     {
         return view('livewire.referensi.data-instruktur', [
-            'data_ptk' => Guru::where(function($query){
+            'data_ptk' => Guru::where(function ($query) {
                 $query->whereIn('jenis_ptk_id', jenis_gtk('instruktur'));
                 $query->where('sekolah_id', session('sekolah_id'));
-            })->with(['sekolah' => function($query){
+            })->with(['sekolah' => function ($query) {
                 $query->select('sekolah_id', 'nama');
             }])->orderBy($this->sortby, $this->sortbydesc)
-                ->when($this->search, function($ptk) {
+                ->when($this->search, function ($ptk) {
                     $ptk->where('nama', 'ILIKE', '%' . $this->search . '%')
-                    ->orWhere('nuptk', 'ILIKE', '%' . $this->search . '%');
-            })->paginate($this->per_page),
+                        ->orWhere('nuptk', 'ILIKE', '%' . $this->search . '%');
+                })->paginate($this->per_page),
             'breadcrumbs' => [
                 ['link' => "/", 'name' => "Beranda"], ['link' => '#', 'name' => 'Referensi'], ['name' => "Data Instruktur"]
             ],
@@ -100,7 +101,8 @@ class DataInstruktur extends Component
             ],
         ]);
     }
-    public function addModal(){
+    public function addModal()
+    {
         $this->emit('showModal');
     }
     public function updatedFileExcel()
@@ -117,20 +119,21 @@ class DataInstruktur extends Component
         $this->file_path = $this->file_excel->store('files', 'public');
         $this->imported_data();
     }
-    private function imported_data(){
-        $imported_data = (new FastExcel)->import(storage_path('/app/public/'.$this->file_path));
+    private function imported_data()
+    {
+        $imported_data = (new FastExcel)->import(storage_path('/app/public/' . $this->file_path));
         $collection = collect($imported_data);
         $multiplied = $collection->map(function ($items, $key) {
-            foreach($items as $k => $v){
-                $k = str_replace('.','',$k);
-                $k = str_replace(' ','_',$k);
-                $k = str_replace('/','_',$k);
+            foreach ($items as $k => $v) {
+                $k = str_replace('.', '', $k);
+                $k = str_replace(' ', '_', $k);
+                $k = str_replace('/', '_', $k);
                 $k = strtolower($k);
                 $item[$k] = $v;
             }
             return $item;
         });
-        foreach($multiplied->all() as $urut => $data){
+        foreach ($multiplied->all() as $urut => $data) {
             $this->nama[$urut] = $data['nama'];
             $this->nuptk[$urut] = $data['nuptk'];
             $this->nip[$urut] = $data['nip'];
@@ -150,7 +153,8 @@ class DataInstruktur extends Component
         }
         $this->imported_data = $multiplied->all();
     }
-    public function store(){
+    public function store()
+    {
         $this->emit('show-tooltip');
         //$this->imported_data();
         $this->validate(
@@ -169,9 +173,9 @@ class DataInstruktur extends Component
                 'nik.*.unique' => 'NIK sudah terdaftar!',
             ]
         );
-        foreach($this->nama as $urut => $nama){
+        foreach ($this->nama as $urut => $nama) {
             $agama = Agama::where('nama', $this->agama[$urut])->first();
-            if($agama){
+            if ($agama) {
                 Guru::updateOrcreate(
                     [
                         'nik' => $this->nik[$urut],
@@ -209,17 +213,19 @@ class DataInstruktur extends Component
             'text' => 'Data Instruktur berhasil disimpan'
         ]);
     }
-    private function loggedUser(){
+    private function loggedUser()
+    {
         return auth()->user();
     }
-    public function detil($id){
+    public function detil($id)
+    {
         $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
         $this->guru_id = $id;
         $this->guru = Guru::with(['gelar_depan', 'gelar_belakang'])->find($id);
-        foreach($this->guru->gelar_depan->unique() as $gelar_depan){
+        foreach ($this->guru->gelar_depan->unique() as $gelar_depan) {
             $this->gelar_depan[] = $gelar_depan->gelar_akademik_id;
         }
-        foreach($this->guru->gelar_belakang->unique() as $gelar_belakang){
+        foreach ($this->guru->gelar_belakang->unique() as $gelar_belakang) {
             $this->gelar_belakang[] = $gelar_belakang->gelar_akademik_id;
         }
         $this->nama = $this->guru->nama;
@@ -243,7 +249,7 @@ class DataInstruktur extends Component
         $this->jenis_ptk_id = $this->guru->jenis_ptk_id;
         $this->status_kepegawaian_id = $this->guru->status_kepegawaian_id;
         $this->ref_gelar_depan = Gelar::where('posisi_gelar', 1)->get();
-		$this->ref_gelar_belakang = Gelar::where('posisi_gelar', 2)->get();
+        $this->ref_gelar_belakang = Gelar::where('posisi_gelar', 2)->get();
         $this->ref_agama = Agama::get();
         $this->ref_jenis_ptk = Jenis_ptk::get();
         $this->ref_status_kepegawaian = Status_kepegawaian::get();
@@ -254,13 +260,14 @@ class DataInstruktur extends Component
         $this->dispatchBrowserEvent('pharaonic.select2.init');
         $this->emit('detilGuru');
     }
-    private function updateGelar($data){
-        $find = Gelar_ptk::where(function($query) use ($data){
+    private function updateGelar($data)
+    {
+        $find = Gelar_ptk::where(function ($query) use ($data) {
             $query->where('sekolah_id', session('sekolah_id'));
             $query->where('guru_id', $this->guru_id);
             $query->where('gelar_akademik_id', $data);
         })->first();
-        if(!$find){
+        if (!$find) {
             Gelar_ptk::create(
                 [
                     'gelar_ptk_id' => Str::uuid(),
@@ -273,7 +280,8 @@ class DataInstruktur extends Component
             );
         }
     }
-    public function perbaharui(){
+    public function perbaharui()
+    {
         $data = Guru::with(['pengguna'])->find($this->guru_id);
         $validation = ($data->pengguna) ? ['required', 'email', 'max:255', Rule::unique('users')->ignore($data->pengguna->user_id, 'user_id')] : ['required', 'email', 'max:255', Rule::unique('users')];
         $this->validate(
@@ -298,23 +306,23 @@ class DataInstruktur extends Component
                 'nuptk.numeric' => 'NIK harus berupa angka!',
             ]
         );
-        Gelar_ptk::where(function($query){
+        Gelar_ptk::where(function ($query) {
             $query->has('gelar_depan');
             $query->where('guru_id', $this->guru_id);
             $query->whereNotIn('gelar_akademik_id', $this->gelar_depan);
         })->delete();
-        Gelar_ptk::where(function($query){
+        Gelar_ptk::where(function ($query) {
             $query->has('gelar_belakang');
             $query->where('guru_id', $this->guru_id);
             $query->whereNotIn('gelar_akademik_id', $this->gelar_belakang);
         })->delete();
-        if($this->gelar_depan){
-            foreach($this->gelar_depan as $depan){
+        if ($this->gelar_depan) {
+            foreach ($this->gelar_depan as $depan) {
                 $this->updateGelar($depan);
             }
         }
-        if($this->gelar_belakang){
-            foreach($this->gelar_belakang as $belakang){
+        if ($this->gelar_belakang) {
+            foreach ($this->gelar_belakang as $belakang) {
                 $this->updateGelar($belakang);
             }
         }
@@ -334,10 +342,10 @@ class DataInstruktur extends Component
         $data->kode_pos = $this->kode_pos;
         $data->no_hp = $this->no_hp;
         $data->email = $this->email;
-        if($data->save()){
+        if ($data->save()) {
             $user = User::where('email', $this->email)->first();
             $role = Role::where('name', 'guru')->first();
-            if($user){
+            if ($user) {
                 $user->email = $this->email;
                 $user->save();
             } else {
@@ -345,26 +353,27 @@ class DataInstruktur extends Component
                 $user = User::create([
                     'name' => $data->nama,
                     'email' => $this->email,
-                    'nuptk'	=> $this->nuptk,
+                    'nuptk'    => $this->nuptk,
                     'password' => bcrypt($new_password),
-                    'last_sync'	=> now(),
-                    'sekolah_id'	=> session('sekolah_id'),
-                    'password_dapo'	=> md5($new_password),
-                    'guru_id'	=> $this->guru_id,
+                    'last_sync'    => now(),
+                    'sekolah_id'    => session('sekolah_id'),
+                    'password_dapo'    => md5($new_password),
+                    'guru_id'    => $this->guru_id,
                     'default_password' => $new_password,
                 ]);
             }
-            if(!$user->hasRole($role, session('semester_id'))){
-                $user->attachRole($role, session('semester_id'));
+            if (!$user->hasRole($role, session('semester_id'))) {
+                $user->addRole($role, session('semester_id'));
             }
         }
         $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);
         $this->emit('close-modal');
-        $this->alert('success', 'Data '.$this->data.' berhasil diperbaharui', [
+        $this->alert('success', 'Data ' . $this->data . ' berhasil diperbaharui', [
             'position' => 'center'
         ]);
     }
-    public function hapus(){
+    public function hapus()
+    {
         $this->alert('question', 'Apakah Anda yakin?', [
             'text' => 'Tindakan ini tidak dapat dikembalikan!',
             'showConfirmButton' => true,
@@ -372,12 +381,13 @@ class DataInstruktur extends Component
             'onConfirmed' => 'confirmed',
             'showCancelButton' => true,
             'cancelButtonText' => 'Batal',
-            'allowOutsideClick' => false,//'() => !Swal.isLoading()',
+            'allowOutsideClick' => false, //'() => !Swal.isLoading()',
             'timer' => null
         ]);
     }
-    public function confirmed(){
-        if($this->guru && $this->guru->delete()){
+    public function confirmed()
+    {
+        if ($this->guru && $this->guru->delete()) {
             $this->alert('success', 'Data Instruktur berhasil dihapus', [
                 'position' => 'center'
             ]);
@@ -388,7 +398,8 @@ class DataInstruktur extends Component
             ]);
         }
     }
-    public function setTglLahir($value){
+    public function setTglLahir($value)
+    {
         $this->tanggal_lahir = Carbon::createFromTimeStamp(strtotime($value))->format('Y-m-d');
         $this->tanggal_lahir_str = Carbon::createFromTimeStamp(strtotime($value))->translatedFormat('j F Y');
     }

@@ -50,18 +50,18 @@ class EraporUpdate extends Command
      */
     public function handle()
     {
-        if(!File::isDirectory(public_path('storage'))){
+        if (!File::isDirectory(public_path('storage'))) {
             $this->call('storage:link');
         } else {
             $symlink = readlink(public_path('storage'));
             $storage = public_path('storage');
-            if($symlink == $storage){
+            if ($symlink == $storage) {
                 Storage::deleteDirectory(public_path('storage'));
                 $this->call('storage:link');
             }
         }
         $roles = Role::get();
-        foreach($roles as $role){
+        foreach ($roles as $role) {
             $permissions = Permission::firstOrCreate([
                 'name' => $role->name,
                 'display_name' => $role->display_name,
@@ -69,16 +69,16 @@ class EraporUpdate extends Command
             ])->id;
             $role->permissions()->sync($permissions);
         }
-        $version = File::get(base_path().'/app_version.txt');
-        $db_version = File::get(base_path().'/db_version.txt');
+        $version = File::get(base_path() . '/app_version.txt');
+        $db_version = File::get(base_path() . '/db_version.txt');
         $this->call('migrate');
         $this->call('cache:clear');
         $this->call('view:clear');
         $this->call('config:cache');
-        if(!Jabatan_ptk::count()){
+        if (!Jabatan_ptk::count()) {
             $this->call('db:seed', ['class' => 'JabatanPtkSeeder']);
         }
-        if(!Gelar::count()){
+        if (!Gelar::count()) {
             $this->call('db:seed', ['class' => 'GelarSeeder']);
         }
         if (version_compare(config('global.app_version'), $version) > 0) {
@@ -86,12 +86,12 @@ class EraporUpdate extends Command
             $this->call('custom:ref');
             $this->info('Menambah referensi CP');
             $this->call('ref:cp');
-        }   
+        }
         $ajaran = [
             [
                 'tahun_ajaran_id' => 2020,
                 'nama' => '2020/2021',
-                'periode_aktif' => 1,   
+                'periode_aktif' => 1,
                 'semester' => [
                     [
                         'semester_id' => 20201,
@@ -110,7 +110,7 @@ class EraporUpdate extends Command
             [
                 'tahun_ajaran_id' => 2021,
                 'nama' => '2021/2022',
-                'periode_aktif' => 1,   
+                'periode_aktif' => 1,
                 'semester' => [
                     [
                         'semester_id' => 20211,
@@ -129,7 +129,7 @@ class EraporUpdate extends Command
             [
                 'tahun_ajaran_id' => 2022,
                 'nama' => '2022/2023',
-                'periode_aktif' => 1,   
+                'periode_aktif' => 1,
                 'semester' => [
                     [
                         'semester_id' => 20221,
@@ -148,7 +148,7 @@ class EraporUpdate extends Command
         ];
         $adminRole = Role::where('name', 'admin')->first();
         $users = User::whereNull('nuptk')->whereNull('nisn')->get();
-        foreach($ajaran as $a){
+        foreach ($ajaran as $a) {
             Tahun_ajaran::updateOrCreate(
                 [
                     'tahun_ajaran_id' => $a['tahun_ajaran_id'],
@@ -161,7 +161,7 @@ class EraporUpdate extends Command
                     'last_sync' => now(),
                 ]
             );
-            foreach($a['semester'] as $semester){
+            foreach ($a['semester'] as $semester) {
                 Semester::updateOrCreate(
                     [
                         'semester_id' => $semester['semester_id'],
@@ -178,31 +178,31 @@ class EraporUpdate extends Command
                 );
             }
         }
-        $all_semester = Semester::whereHas('tahun_ajaran', function($query){
+        $all_semester = Semester::whereHas('tahun_ajaran', function ($query) {
             $query->where('periode_aktif', 1);
         })->get();
-        foreach($all_semester as $semester){
+        foreach ($all_semester as $semester) {
             $team = Team::updateOrCreate([
                 'name' => $semester->nama,
                 'display_name' => $semester->nama,
                 'description' => $semester->nama,
             ]);
-            foreach($users as $user){
-                if(!$user->hasRole($adminRole, $team)){
-                    $user->attachRole($adminRole, $team);
+            foreach ($users as $user) {
+                if (!$user->hasRole($adminRole, $team)) {
+                    $user->addRole($adminRole, $team);
                 }
             }
         }
         Semester::where('semester_id', '<>', '20222')->update(['periode_aktif' => 0]);
         Semester::where('semester_id', '20222')->update(['periode_aktif' => 1]);
         $guru = Guru::whereRaw('guru_id <> guru_id_dapodik')->first();
-        if($guru){
+        if ($guru) {
             $semester = Semester::where('periode_aktif', 1)->first();
             $users = User::whereRoleIs('admin', $semester->nama)->get();
-            foreach($users as $user){
-                $this->info('Proses update data GTK ('.$user->sekolah->nama.')');
+            foreach ($users as $user) {
+                $this->info('Proses update data GTK (' . $user->sekolah->nama . ')');
                 $this->call('update:guru', ['sekolah_id' => $user->sekolah_id, 'semester_id' => $semester->semester_id]);
-                $this->info('Proses update data Peserta Didik ('.$user->sekolah->nama.')');
+                $this->info('Proses update data Peserta Didik (' . $user->sekolah->nama . ')');
                 $this->call('update:siswa', ['sekolah_id' => $user->sekolah_id]);
             }
             $this->call('hapus:ganda');
@@ -223,6 +223,6 @@ class EraporUpdate extends Command
                 'value' => $db_version,
             ]
         );
-        $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
+        $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi ' . $version);
     }
 }
