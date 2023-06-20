@@ -135,7 +135,7 @@ class Users extends Component
                     $user->name = $d->nama_lengkap;
                     $user->save();
                 }
-                $user->detachRole($adminRole, session('semester_id'));
+                $user->removeRole($adminRole, session('semester_id'));
                 if ($jenis_tu->contains($d->jenis_ptk_id)) {
                     $role = Role::where('name', 'tu')->first();
                 } elseif ($asesor->contains($d->jenis_ptk_id)) {
@@ -153,7 +153,7 @@ class Users extends Component
                     }
                 } else {
                     if ($user->hasRole($WalasRole, session('semester_id'))) {
-                        $user->detachRole($WalasRole, session('semester_id'));
+                        $user->removeRole($WalasRole, session('semester_id'));
                     }
                 }
                 $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->where('mata_pelajaran_id', '200040000')->has('tema')->first();
@@ -163,7 +163,7 @@ class Users extends Component
                     }
                 } else {
                     if ($user->hasRole($p5Role, session('semester_id'))) {
-                        $user->detachRole($p5Role, session('semester_id'));
+                        $user->removeRole($p5Role, session('semester_id'));
                     }
                 }
                 $find_ekskul = Ekstrakurikuler::where('guru_id', $d->guru_id)->where('semester_id', session('semester_aktif'))->first();
@@ -173,7 +173,7 @@ class Users extends Component
                     }
                 } else {
                     if ($user->hasRole($PembinaRole, session('semester_id'))) {
-                        $user->detachRole($PembinaRole, session('semester_id'));
+                        $user->removeRole($PembinaRole, session('semester_id'));
                     }
                 }
             }
@@ -222,7 +222,7 @@ class Users extends Component
                         'default_password' => $new_password,
                     ]);
                 }
-                $user->detachRole($adminRole, session('semester_id'));
+                $user->removeRole($adminRole, session('semester_id'));
                 if (!$user->hasRole($role, session('semester_id'))) {
                     $user->addRole($role, session('semester_id'));
                 }
@@ -265,7 +265,7 @@ class Users extends Component
     }
     public function hapusAkses($user_id, $role)
     {
-        $this->pengguna->detachRole($role, session('semester_id'));
+        $this->pengguna->removeRole($role, session('semester_id'));
         $this->alert('success', 'Berhasil', [
             'text' => 'Hak Akses berhasil dihapus'
         ]);
