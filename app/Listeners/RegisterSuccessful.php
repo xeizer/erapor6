@@ -46,7 +46,7 @@ class RegisterSuccessful
             'description' => $semester->nama,
         ]);
         if(!$user->hasRole($adminRole, $semester->semester_id)){
-            $user->attachRole($adminRole, $team);
+            $user->addRole($adminRole, $team);
         }
         */
         $user = $event->user;
@@ -179,7 +179,7 @@ class RegisterSuccessful
                         'description' => $semester->nama,
                     ]);
                     if(!$user->hasRole($adminRole, $semester->semester_id)){
-                        $user->attachRole($adminRole, $team);
+                        $user->addRole($adminRole, $team);
                     }
                     $user->save();
                     $this->request->session()->put('semester_id', $semester->nama);

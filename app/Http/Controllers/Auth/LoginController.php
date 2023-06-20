@@ -117,7 +117,7 @@ class LoginController extends Controller
                     'description' => $semester->nama,
                 ]);
                 if(!$user->hasRole('admin', $semester->nama)){
-                    $user->attachRole('admin', $team);
+                    $user->addRole('admin', $team);
                 }
             }
             return redirect()->route('index');
@@ -274,7 +274,7 @@ class LoginController extends Controller
                 'display_name' => $semester->nama,
                 'description' => $semester->nama,
             ]);
-            $user->attachRole($adminRole, $team);
+            $user->addRole($adminRole, $team);
             session()->flash('success', 'Registrasi berhasil');
             return redirect()->route('login');
         } else {

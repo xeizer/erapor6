@@ -722,16 +722,16 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "27c555ebd2ae8fde9e6e8cb84e6fbea57d067634"
+                "reference": "f9301a5b2fb1216b2b08f02ba04dc45423db6bff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/27c555ebd2ae8fde9e6e8cb84e6fbea57d067634",
-                "reference": "27c555ebd2ae8fde9e6e8cb84e6fbea57d067634",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/f9301a5b2fb1216b2b08f02ba04dc45423db6bff",
+                "reference": "f9301a5b2fb1216b2b08f02ba04dc45423db6bff",
                 "shasum": ""
             },
             "require": {
@@ -793,7 +793,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/inflector/issues",
-                "source": "https://github.com/doctrine/inflector/tree/2.0.7"
+                "source": "https://github.com/doctrine/inflector/tree/2.0.8"
             },
             "funding": [
                 {
@@ -809,7 +809,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-16T10:07:19+00:00"
+            "time": "2023-06-16T13:40:37+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -4097,16 +4097,16 @@
         },
         {
             "name": "openspout/openspout",
-            "version": "v4.14.0",
+            "version": "v4.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openspout/openspout.git",
-                "reference": "528442c4051c8dfc53c164651156fa616c370931"
+                "reference": "907a2ff042741b1f25b6e636d18ce9d7fc4c8333"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openspout/openspout/zipball/528442c4051c8dfc53c164651156fa616c370931",
-                "reference": "528442c4051c8dfc53c164651156fa616c370931",
+                "url": "https://api.github.com/repos/openspout/openspout/zipball/907a2ff042741b1f25b6e636d18ce9d7fc4c8333",
+                "reference": "907a2ff042741b1f25b6e636d18ce9d7fc4c8333",
                 "shasum": ""
             },
             "require": {
@@ -4120,17 +4120,17 @@
             },
             "require-dev": {
                 "ext-zlib": "*",
-                "friendsofphp/php-cs-fixer": "^3.17.0",
+                "friendsofphp/php-cs-fixer": "^3.18.0",
                 "infection/infection": "^0.27",
                 "phpbench/phpbench": "^1.2.10",
-                "phpstan/phpstan": "^1.10.15",
-                "phpstan/phpstan-phpunit": "^1.3.12",
+                "phpstan/phpstan": "^1.10.19",
+                "phpstan/phpstan-phpunit": "^1.3.13",
                 "phpstan/phpstan-strict-rules": "^1.5.1",
-                "phpunit/phpunit": "^10.1.3"
+                "phpunit/phpunit": "^10.2.2"
             },
             "suggest": {
-                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
-                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
+                "ext-mbstring": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
             },
             "type": "library",
             "extra": {
@@ -4174,7 +4174,7 @@
             ],
             "support": {
                 "issues": "https://github.com/openspout/openspout/issues",
-                "source": "https://github.com/openspout/openspout/tree/v4.14.0"
+                "source": "https://github.com/openspout/openspout/tree/v4.15.0"
             },
             "funding": [
                 {
@@ -4186,7 +4186,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-05-24T09:26:05+00:00"
+            "time": "2023-06-19T07:48:22+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
