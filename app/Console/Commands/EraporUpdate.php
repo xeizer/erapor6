@@ -198,7 +198,7 @@ class EraporUpdate extends Command
         $guru = Guru::whereRaw('guru_id <> guru_id_dapodik')->first();
         if ($guru) {
             $semester = Semester::where('periode_aktif', 1)->first();
-            $users = User::whereRoleIs('admin', $semester->nama)->get();
+            $users = User::whereHasRole('admin', $semester->nama)->get();
             foreach ($users as $user) {
                 $this->info('Proses update data GTK (' . $user->sekolah->nama . ')');
                 $this->call('update:guru', ['sekolah_id' => $user->sekolah_id, 'semester_id' => $semester->semester_id]);

@@ -46,7 +46,7 @@ class Users extends Component
     {
         $loggedUser = auth()->user();
         $where = function ($query) {
-            $query->whereRoleIs(['guru', 'siswa', 'tu'], session('semester_id'));
+            $query->whereHasRole(['guru', 'siswa', 'tu'], session('semester_id'));
             $query->where('sekolah_id', session('sekolah_id'));
         };
         return view('livewire.pengaturan.users', [
@@ -62,7 +62,7 @@ class Users extends Component
                     $query->where($where);
                 })->when($this->role_id, function ($ptk) {
                     if ($this->role_id !== 'all') {
-                        $ptk->whereRoleIs($this->role_id, session('semester_id'));
+                        $ptk->whereHasRole($this->role_id, session('semester_id'));
                     }
                 })->paginate($this->per_page),
             'hak_akses' => Role::whereNotIn('id', [1, 2, 6])->get(),
