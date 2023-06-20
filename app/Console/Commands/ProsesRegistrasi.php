@@ -184,7 +184,7 @@ class ProsesRegistrasi extends Command
                 'display_name' => $semester->nama,
                 'description' => $semester->nama,
             ]);
-            $user->addRole($adminRole, $team);
+            $user->attachRole($adminRole, $team);
             $this->info('Registrasi berhasil');
         } else {
             $this->error('Jenjang Sekolah Salah');

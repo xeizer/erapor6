@@ -355,7 +355,7 @@ class DataInstruktur extends Component
                 ]);
             }
             if(!$user->hasRole($role, session('semester_id'))){
-                $user->addRole($role, session('semester_id'));
+                $user->attachRole($role, session('semester_id'));
             }
         }
         $this->reset(['guru_id', 'gelar_depan', 'gelar_belakang', 'nuptk', 'nip', 'nik', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama_id', 'rt', 'rw', 'desa_kelurahan', 'kecamatan', 'kode_pos', 'no_hp', 'email', 'jenis_ptk_id', 'status_kepegawaian_id']);

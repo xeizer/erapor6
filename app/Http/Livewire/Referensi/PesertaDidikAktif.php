@@ -226,7 +226,7 @@ class PesertaDidikAktif extends Component
                     'default_password' => $new_password,
                 ]);
                 if(!$user->hasRole($role, session('semester_id'))){
-                    $user->addRole($role, session('semester_id'));
+                    $user->attachRole($role, session('semester_id'));
                 }
             }
             $this->alert('success', 'Berhasil', [
