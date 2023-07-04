@@ -216,10 +216,11 @@ class CetakController extends Controller
 			$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
 		}])->get();
 		$find_anggota_rombel_pilihan = Anggota_rombel::where(function($query) use ($get_siswa){
-			$query->whereHas('rombongan_belajar', function($query){
+			$query->whereHas('rombongan_belajar', function($query) use ($get_siswa){
 				$query->where('jenis_rombel', 16);
 				$query->where('sekolah_id', session('sekolah_id'));
 				$query->where('semester_id', session('semester_aktif'));
+				$query->where('jurusan_id', $get_siswa->rombongan_belajar->jurusan_id);
 			});
 			$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
 		})->with([
@@ -227,16 +228,23 @@ class CetakController extends Controller
 				$query->where('jenis_rombel', 16);
 				$query->where('sekolah_id', session('sekolah_id'));
 				$query->where('semester_id', session('semester_aktif'));
+				$query->where('jurusan_id', $get_siswa->rombongan_belajar->jurusan_id);
 				$query->with([
 					'pembelajaran' => function($query) use ($get_siswa){
 						$callback = function($query) use ($get_siswa){
 							$query->whereHas('anggota_rombel', function($query) use ($get_siswa){
 								$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
+								//$query->whereHas('rombongan_belajar', function($query) use ($get_siswa){
+									//$query->where('jurusan_id1', $get_siswa->rombongan_belajar->jurusan_id);
+								//});
 							});
 						};
 						$query->with([
 							'anggota_rombel' => function($query) use ($get_siswa){
 								$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
+								//$query->whereHas('rombongan_belajar', function($query) use ($get_siswa){
+									//$query->where('jurusan_id1', $get_siswa->rombongan_belajar->jurusan_id);
+								//});
 							},
 							'kelompok',
 							//'nilai_akhir' => $callback,
@@ -447,6 +455,7 @@ class CetakController extends Controller
 						'elemen_budaya_kerja' => function($query) use ($anggota_rombel_id){
 							$query->with(['nilai_budaya_kerja' => function($query) use ($anggota_rombel_id){
 								$query->where('anggota_rombel_id', $anggota_rombel_id);
+								$query->whereNotNull('aspek_budaya_kerja_id');
 							}]);
 						},
 						'budaya_kerja',
@@ -455,7 +464,7 @@ class CetakController extends Controller
 				'catatan_budaya_kerja' => function($query) use ($anggota_rombel_id){
 					$query->where('anggota_rombel_id', $anggota_rombel_id);
 				},
-			])->get(),
+			])->orderBy('updated_at', 'DESC')->get(),
 			'opsi_budaya_kerja' => Opsi_budaya_kerja::where('opsi_id', '<>', 1)->orderBy('updated_at', 'ASC')->get(),
 			'budaya_kerja' => Budaya_kerja::orderBy('budaya_kerja_id')->get(),
 		);
